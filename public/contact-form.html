@@ -4,7 +4,7 @@
   </div>
 </div>
 <div class="container">
-  <div class=row>
+  <div class="row" style="margin-top: 10px;">
     <div class="col-md-6">
       <label>First Name</label> 
       <input id="name" class="form-control" type="text" ng-model="contact.firstName" required> 
@@ -14,7 +14,7 @@
       <input id="name" class="form-control" type="text" ng-model="contact.lastName" required> 
     </div>
   </div>
-  <div class=row>
+  <div class="row" style="margin-top: 10px;">
     <div class="col-md-6">
       <label>Email</label> 
       <input id="name" class="form-control" type="text" ng-model="contact.email" required> 
@@ -24,7 +24,7 @@
       <input id="name" class="form-control" type="text" ng-model="contact.twitter"> 
     </div>
   </div>
-  <div class=row>
+  <div class="row" style="margin-top: 10px;">
     <div class="col-md-6">
       <label>Phone (Mobile)</label> 
       <input id="name" class="form-control" type="text" ng-model="contact.phone.mobile"> 
@@ -34,14 +34,14 @@
       <input id="name" class="form-control" type="text" ng-model="contact.phone.work"> 
     </div>
   </div>
-  <div class=row>
+  <div class="row" style="margin-top: 10px;">
     <div class="col-md-6">
       <label>Address</label> 
       <input id="name" class="form-control" type="text" ng-model="contact.address"> 
     </div>
     <div class="col-md-6">
-      <button style="margin-top:20px" class="btn btn-default" ng-click="saveContact(contact)">Save</button>
-      <button style="margin-top:20px" class="btn btn-default" ng-click="back()">Back</button>
+      <button style="margin-top:20px" class="btn btn-primary" ng-click="back()">Back</button>
+      <button style="margin-top:20px" class="btn btn-primary" ng-click="saveContact(contact)">Save</button>
     </div>
   </div>
 </div>
