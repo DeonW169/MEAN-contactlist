@@ -5,8 +5,8 @@
     </h2>
   </div>
 </div>
-<div ng-hide="editMode" class="container box-shadow">
-  <div>
+<div ng-hide="editMode" class="container col-md-12 box-shadow">
+  <div style="margin-top: 15px;">
     <p ng-if="contact.email">email: <a ng-href="mailto:{{ contact.email }}" target="_blank">{{ contact.email }}</a></p>
     <p ng-if="contact.phone.mobile">phone (m): {{ contact.phone.mobile }} </p>
     <p ng-if="contact.phone.work">phone (w): {{ contact.phone.work }} </p>
