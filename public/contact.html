@@ -1,18 +1,11 @@
-<div class = "row">
-  <div class="col-md-6">
+<div class = "row box-shadow">
+  <div class="col-md-12">
     <h2>
       {{ contact.firstName }} {{ contact.lastName }}
     </h2>
   </div>
-  <div class="col-md-3">
-  </div>
-  <div class="col-md-2">
-    <a href="#/"><button style="margin-top:20px" class="btn btn-default" ng-click="deleteContact(contact._id)">Delete</button></a>
-  </div>
-  <div class="col-md-1">
-  </div>
 </div>
-<div ng-hide="editMode" class="container">
+<div ng-hide="editMode" class="container box-shadow">
   <div>
     <p ng-if="contact.email">email: <a ng-href="mailto:{{ contact.email }}" target="_blank">{{ contact.email }}</a></p>
     <p ng-if="contact.phone.mobile">phone (m): {{ contact.phone.mobile }} </p>
@@ -20,8 +13,9 @@
     <p ng-if="contact.address"> address: {{ contact.address }} </p>
     <p ng-if="contact.twitter"> twitter: <a ng-href="https://twitter.com/{{ contact.twitter }}" target="_blank">@{{ contact.twitter }}</a></p>
     <p>
-      <button style="margin-top:20px" class="btn btn-default" ng-click="toggleEdit()">Edit</button>
-      <a style="margin-top:20px" class="btn btn-default" href="#/">Back</a>
+      <a href="#/"><button style="margin-top:20px" class="btn btn-primary" ng-click="deleteContact(contact._id)">Delete Contact</button></a>
+      <button style="margin-top:20px" class="btn btn-primary" ng-click="toggleEdit()">Edit Contact</button>
+      <a style="margin-top:20px" class="btn btn-primary" href="#/">Back</a>
     </p>
   </div>
 </div>
