@@ -4,7 +4,12 @@ var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 
+var redisClient = require('redis').createClient;
+var redis = redisClient(6379, 'localhost');
+
 var CONTACTS_COLLECTION = "contacts";
+
+var access = require('./access.js');
 
 var app = express();
 app.use(express.static(__dirname + "/public"));
@@ -15,10 +20,7 @@ var db;
 
 // Connect to the database before starting the application server.
 mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
-  if (err) {
-    console.log(err);
-    process.exit(1);
-  }
+  if (err) throw 'Error connecting to db - ' + err;
 
   // Save database object from the callback for reuse.
   db = database;
@@ -44,7 +46,8 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new contact
  */
 
-app.get("/contacts", function(req, res) {
+app.get("/contacts", function(req, res) 
+{
   db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
@@ -54,7 +57,7 @@ app.get("/contacts", function(req, res) {
   });
 });
 
-app.post("/contacts", function(req, res) {
+/*app.post("/contacts", function(req, res) {
   var newContact = req.body;
   newContact.createDate = new Date();
 
@@ -69,7 +72,20 @@ app.post("/contacts", function(req, res) {
       res.status(201).json(doc.ops[0]);
     }
   });
-});
+});*/
+
+app.post('/contacts', function (req, res) 
+    {
+        if (!req.body.firstName || !req.body.lastName) res.status(400).send("send firstName and lastName for contact");
+        else if (!req.body.text) res.status(400).send("send some text the contact");
+        else {
+            access.saveContact(db, req.body.firstName, req.body.lastName, req.body.text, function (err) 
+            {
+                if (err) res.status(500).send("Server error");
+                else res.status(201).send("Saved");
+            });
+        }
+    });
 
 /*  "/contacts/:id"
  *    GET: find contact by id
@@ -77,7 +93,7 @@ app.post("/contacts", function(req, res) {
  *    DELETE: deletes contact by id
  */
 
-app.get("/contacts/:id", function(req, res) {
+/*app.get("/contacts/:id", function(req, res) {
   db.collection(CONTACTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to get contact");
@@ -85,9 +101,21 @@ app.get("/contacts/:id", function(req, res) {
       res.status(200).json(doc);
     }
   });
-});
+});*/
 
-app.put("/contacts/:id", function(req, res) {
+app.get('/contacts/:firstName', function (req, res) 
+{
+    if (!req.param('firstName')) res.status(400).send("send a firstName");
+    else {
+          access.findContactByFirstNameCached(db, redis, req.param('firstName'), function (contact) 
+          {
+              if (!text) res.status(500).send("Server error");
+              else res.status(200).send(contact);
+          });
+      }
+  });
+
+/*app.put("/contacts/:id", function(req, res) {
   var updateDoc = req.body;
   delete updateDoc._id;
 
@@ -98,7 +126,21 @@ app.put("/contacts/:id", function(req, res) {
       res.status(204).end();
     }
   });
-});
+});*/
+
+app.put('/contacts/:firstName', function (req, res) 
+{
+    if (!req.param("firstName")) res.status(400).send("send the contact firstName");
+    else if (!req.param("text")) res.status(400).send("send the new text");
+    else {
+          access.updateContactByFirstName(db, redis, req.param("firstName"), req.param("text"), function (err) 
+          {
+              if (err == "Missing contact") res.status(404).send("Contact not found");
+              else if (err) res.status(500).send("Server error");
+              else res.status(200).send("Updated");
+          });
+      }
+  });
 
 app.delete("/contacts/:id", function(req, res) {
   db.collection(CONTACTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
